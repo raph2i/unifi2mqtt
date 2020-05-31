@@ -42,11 +42,6 @@ mqtt.on('connect', () => {
     log.info('mqtt connected', config.url);
     mqttPub(config.name + '/connected', unifiConnected ? '2' : '1', {retain: true});
 
-    log.info('mqtt subscribe', config.name + '/set/#');
-    mqtt.subscribe(config.name + '/set/#');
-
-    log.info('mqtt subscribe', config.name + '/status/wifi/+/client/+');
-    mqtt.subscribe(config.name + '/status/wifi/+/client/+');
     retainedClientsTimeout = setTimeout(clientsReceived, 2000);
 });
 
