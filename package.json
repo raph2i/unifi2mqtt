@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hobbyquaker/unifi2mqtt"
+    "url": "https://github.com/raph2i/unifi2mqtt"
   },
   "keywords": [
     "mqtt",
@@ -24,17 +24,18 @@
     "ubiquiti",
     "clients"
   ],
-  "author": "Sebastian Raff <hobbyquaker@gmail.com> (https://github.com/hobbyquaker)",
+  "author": "Raphael Pertl <github@pertl.tech> (https://github.com/raph2i)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hobbyquaker/unifi2mqtt/issues"
+    "url": "https://github.com/raph2i/unifi2mqtt/issues"
   },
-  "homepage": "https://github.com/hobbyquaker/unifi2mqtt",
+  "homepage": "https://github.com/raph2i/unifi2mqtt",
   "dependencies": {
     "mqtt": "^2.18.3",
     "ubnt-unifi": "^1.0.0",
     "yalm": "^4.1.0",
-    "yargs": "^12.0.1"
+    "yargs": "^12.0.1",
+    "yarn": "^1.22.4"
   },
   "devDependencies": {
     "camo-purge": "latest",

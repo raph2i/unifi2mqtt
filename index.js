@@ -17,6 +17,11 @@ let mqttConnected;
 let unifiConnected = false;
 let retainedClientsTimeout;
 let numClients = {};
+let bckspcclients_eap = 0;
+let bckspcclients_wpa = 0;
+let bckspcclients_lounge = 0;
+let bckspcclients_hackcenter = 0;
+let bckspcclients_iot = 0;
 const retainedClients = {};
 const idWifi = {};
 const dataWifi = {};
@@ -192,6 +197,7 @@ function getClients() {
             });
         });
         wifiInfoPub();
+        bckspcwifiInfoPub();
     });
 }
 
@@ -215,6 +221,7 @@ unifi.on('*.disconnected', data => {
         numClients[data.ssid] = 0;
     }
     wifiInfoPub();
+    bckspcwifiInfoPub();
     mqttPub([config.name, 'status', 'wifi', data.ssid, 'event', 'disconnected'].join('/'), {val: data.hostname, mac: data.user, ts: data.time});
     mqttPub([config.name, 'status', 'wifi', data.ssid, 'client', data.hostname].join('/'), {val: false, mac: data.user, ts: data.time}, {retain: true});
 });
@@ -227,6 +234,7 @@ unifi.on('*.connected', data => {
         numClients[data.ssid] = 1;
     }
     wifiInfoPub();
+    bckspcwifiInfoPub();
     mqttPub([config.name, 'status', 'wifi', data.ssid, 'event', 'connected'].join('/'), {val: data.hostname, mac: data.user, ts: data.time});
     mqttPub([config.name, 'status', 'wifi', data.ssid, 'client', data.hostname].join('/'), {val: true, mac: data.user, ts: data.time}, {retain: true});
 });
@@ -257,4 +265,50 @@ function wifiInfoPub() {
         mqttPub([config.name, 'status', 'wifi', ssid, 'enabled'].join('/'), {val: dataWifi[idWifi[ssid]].enabled, ts}, {retain: true});
     });
     mqttPub([config.name, 'status', 'clientCount'].join('/'), {val: sum, ts}, {retain: true});
+}
+
+function bckspcwifiInfoPub() {
+    let bckspcclients_eap = 0;
+    let bckspcclients_wpa = 0;
+    let bckspcclients_lounge = 0;
+    let bckspcclients_hackcenter = 0;
+    let bckspcclients_iot = 0;
+    const ts = (new Date()).getTime();
+    unifi.get('stat/sta').then(clients => {
+        clients.data.forEach(client => {
+
+            log.debug('fistus <', client);
+            if (client.essid == 'backspace IoT'){
+                bckspcclients_iot += 1;
+            } 
+            if (client.essid == 'backspace WPA2'){
+                bckspcclients_wpa += 1;
+            } 
+            if (client.essid == 'backspace 802.1x'){
+                bckspcclients_eap += 1;
+            } 
+            if (client.ap_mac == 'f0:9f:c2:f6:65:f2'){ // lounge
+                bckspcclients_lounge += 1;
+            } 
+            if (client.ap_mac == 'f0:9f:c2:f6:6d:c4'){ // hackcenter
+                bckspcclients_hackcenter += 1;
+            } 
+
+        })
+        log.debug('fistus iot <', bckspcclients_iot);
+        mqtt.publish('sensor/wifi/radio/backspace_IoT', bckspcclients_iot.toString());
+
+        log.debug('fistus wpa <', bckspcclients_wpa);
+        mqtt.publish('sensor/wifi/radio/backspace_WPA2', bckspcclients_wpa.toString());
+
+        log.debug('fistus eap <', bckspcclients_eap);
+        mqtt.publish('sensor/wifi/radio/backspace_802.1x', bckspcclients_eap.toString());
+
+        log.debug('fistus lounge <', bckspcclients_lounge);
+        mqtt.publish('sensor/wifi/room/lounge', bckspcclients_lounge.toString());
+
+        log.debug('fistus hackcenter <', bckspcclients_hackcenter);
+        mqtt.publish('sensor/wifi/room/hackcenter', bckspcclients_hackcenter.toString());
+    })
+        
 }

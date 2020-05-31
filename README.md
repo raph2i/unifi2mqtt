@@ -11,7 +11,7 @@
 
 ### Install
 
-`$ sudo npm install -g unifi2mqtt`
+`$ yarn install`
 
 I suggest to use [pm2](http://pm2.keymetrics.io/) to manage the unifi2mqtt process (start on system boot, manage log 
 files, ...)
@@ -54,10 +54,18 @@ otherwise. Object also contains the properties `mac` and `ts`. Retained.
 * `<name>/connected` - `1` if connected to mqtt broker, `2` if connected to UniFi Controller, `0` on last will. 
 Retained.
 
+##### BackSpace e.V. related stuff
+
+* sensor/wifi/radio/backspace_IoT 
+* sensor/wifi/radio/backspace_WPA2
+* sensor/wifi/radio/backspace_802.1x
+* sensor/wifi/room/lounge
+* sensor/wifi/room/hackcenter
 
 ## License
 
 MIT © [Sebastian Raff](https://github.com/hobbyquaker)
+adapted by MIT © [Raphael Pertl](https://github.com/raph2i)
 
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat
 [mit-url]: LICENSE
