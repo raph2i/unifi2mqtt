@@ -108,33 +108,7 @@ mqtt.on('message', (topic, payload) => {
 
     const parts = topic.split('/');
 
-    if (parts[1] === 'set' && parts[2] === 'device' && parts[4] === 'led') {
-        // Set device led override mode
-        let val = parsePayload(payload);
-        if (val === 'on' || val === true || ((typeof val === 'number') && val)) {
-            val = 'on';
-        } else if (val === 'off' || val === false || ((typeof val === 'number') && !val)) {
-            val = 'off';
-        } else {
-            val = 'default';
-        }
-        if (idDevice[parts[3]]) {
-            log.debug('unifi > rest/device/' + idDevice[parts[3]], {led_override: val});
-            unifi.put('rest/device/' + idDevice[parts[3]], {led_override: val}).then(getDevices);
-        } else {
-            log.warn('unknown device', parts[3]);
-        }
-    } else if (parts[1] === 'set' && parts[2] === 'wifi' && parts[4] === 'enabled') {
-        // Set wireless network enable/disable
-        if (idWifi[parts[3]]) {
-            log.debug('unifi > upd/wlanconf/' + idWifi[parts[3]], {enabled: Boolean(parsePayload(payload))});
-            unifi.post('upd/wlanconf/' + idWifi[parts[3]], {enabled: Boolean(parsePayload(payload))}).then(() => {
-                setTimeout(getWifiNetworks, 5000);
-            });
-        } else {
-            log.warn('unknown wireless network', parts[3]);
-        }
-    } else if (parts[1] === 'status' && parts[2] === 'wifi' && parts[4] === 'client') {
+    if (parts[1] === 'status' && parts[2] === 'wifi' && parts[4] === 'client') {
         // Retained client status
         clearTimeout(retainedClientsTimeout);
         retainedClientsTimeout = setTimeout(clientsReceived, 2000);
